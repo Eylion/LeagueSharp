@@ -12,19 +12,19 @@ namespace ejercicio_bucles
         static void Main(string[] args)
         {
             int sumatoria = 0;
-            for (int i = 1; i <=5; i++)
+            for (int i = 1; i <= 5; i++)
             {
-                Console.WriteLine("Introduzca un numero");
+                Console.WriteLine("Introduce un número");
                 int numero = int.Parse(Console.ReadLine());
                 int factorial = 1;
                 for (int j = 1; j <= numero; j++)
                 {
                     factorial = factorial * j;
                 }
-                sumatoria += factorial;
-                Console.WriteLine("El factorial de {0} es {1}", numero, factorial);
+                sumatoria = sumatoria + factorial;
+                Console.WriteLine("El valor del numero {0} y su factorial es {1}", numero, factorial);
             }
-            Console.WriteLine("La suma de los factoriales es {0}", sumatoria);
+            Console.WriteLine("El valor de la suma de todos los factoriales es {0}", sumatoria);
             Console.ReadKey();
         }
     }
